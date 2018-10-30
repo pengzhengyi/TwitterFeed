@@ -8,6 +8,14 @@ else
 				pip3 install setuptools
 fi
 
+if [[ $(pip3 show wheel) ]];
+then
+				echo 'wheel has already been installed'
+else
+				echo 'installing wheel'
+				pip3 install wheel
+fi
+
 if [[ $(pip3 show selenium) ]];
 then
 				echo 'selenium has already been installed'
