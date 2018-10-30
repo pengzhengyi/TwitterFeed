@@ -2,13 +2,23 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import json
 import os
+import sys
+import platform
 
 twitter_url = 'https://twitter.com/'
 request_url = 'https://twitter.com/search?q=Taylor%20Swift'
-
 cwd = os.getcwd()
-chromedriver_path = "%s/chromedriver" % cwd
 
+def determine_os():
+    os = platform.system().lower()
+    if os == 'linux':
+        return 'linux'
+    elif os == 'darwin':
+        return 'mac'
+    else:
+        sys.exit('unsupported os type %s' % os)
+
+chromedriver_path = "%s/chromedriver_%s" % (cwd, determine_os())
 def make_soup():
     # driver = webdriver.Safari()
     driver = webdriver.Chrome(executable_path=chromedriver_path)
