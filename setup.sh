@@ -1,18 +1,25 @@
 #!/bin/bash
 
+if [[ $(pip3 show setuptools) ]];
+then
+				echo 'setuptools has already been installed'
+else
+				echo 'installing setuptools'
+				pip3 install setuptools
+fi
+
 if [[ $(pip3 show selenium) ]];
 then
 				echo 'selenium has already been installed'
 else
-				echo 'installing selenium...'
-				pip3 install selenium
+				echo 'installing selenium'
 fi
 
 if [[ $(pip3 show bs4) ]];
 then
 				echo 'bs4 has already been installed'
 else
-				echo 'installing bs4...'
+				echo 'installing bs4'
 				pip3 install bs4
 fi
 
