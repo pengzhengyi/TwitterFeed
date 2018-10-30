@@ -1,3 +1,7 @@
+Supported Platforms:
+	+. Darwin (Mac)
+	+. Linux
+
 Prerequiesites:
 	+. python3
 	+. pip3

@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import json
 import os
@@ -19,9 +20,11 @@ def determine_os():
         sys.exit('unsupported os type %s' % os)
 
 chromedriver_path = "%s/chromedriver_%s" % (cwd, determine_os())
-def make_soup():
+def make_soup(quiet=True):
     # driver = webdriver.Safari()
-    driver = webdriver.Chrome(executable_path=chromedriver_path)
+    options = Options()
+    options.headless = quiet
+    driver = webdriver.Chrome(executable_path=chromedriver_path, chrome_options=options)
     driver.implicitly_wait(30)
     driver.get(request_url)
     soup = BeautifulSoup(driver.page_source, 'html.parser')
