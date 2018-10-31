@@ -15,7 +15,7 @@ twitter_url = 'https://twitter.com/'
 request_url = 'https://twitter.com/search?q=Taylor%20Swift'
 cwd = os.getcwd()
 
-tweets = deque(maxlen=1000)
+tweets = deque(maxlen=10000)
 tweets_ids = set()
 
 def determine_os():
