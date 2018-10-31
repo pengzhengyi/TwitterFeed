@@ -7,6 +7,8 @@ Prerequiesites:
 	+ pip3
 
 Run:
-./setup.sh
+		./serve (this script will check for dependencies and start the local server)
+		Server will respond to "http://localhost:8080/feed/start"
 
-Server will respond to "http://localhost:8080/feed/start"
+Stop:
+	Type two CTRL-C (the first will stop pulling tweets, the second will stop the server)
