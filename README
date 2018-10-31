@@ -1,10 +1,10 @@
 Supported Platforms:
-	+. Darwin (Mac)
-	+. Linux
+	+ Darwin (Mac)
+	+ Linux
 
 Prerequiesites:
-	+. python3
-	+. pip3
+	+ python3
+	+ pip3
 
 Run:
 ./setup.sh

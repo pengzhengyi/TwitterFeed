@@ -41,6 +41,13 @@ case "${unameOut}" in
 esac
 echo "Operating System: [${machine}]"
 
+fridge='swiftweets.json'
+if [ ! -e ${fridge} ];
+then
+				echo "Move fridge into the house"
+				touch ${fridge}
+fi
+echo "Fridge has been powered on"
 
 echo 'Start the server'
 echo 'listening to http://localhost:8080/feed/start'
