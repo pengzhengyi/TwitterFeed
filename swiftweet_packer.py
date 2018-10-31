@@ -6,7 +6,6 @@ import json
 import os
 import platform
 import random
-import signal
 import sys
 import threading
 import time
@@ -120,14 +119,11 @@ def defrost(fridge):
             tweets.extendleft(json.load(fgd))
 
 def packing(fridge='swiftweets.json'):
-    def stage(signum, f):
-        t.cancel()
-        refridge(fridge)
-        print("soup has been put inside the fridge")
-        signal.signal(signal.SIGINT, orig_sigint_handler)
-    orig_sigint_handler = signal.signal(signal.SIGINT, stage)
-    print("Type CTRL-C to stop packing")
     defrost(fridge)
     autoload()
 
-packing()
+def stop_packing(fridge='swiftweets.json'):
+    t.cancel()
+    refridge(fridge)
+    print("soup has been put inside the fridge")
+

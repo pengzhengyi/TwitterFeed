@@ -1,6 +1,8 @@
 import socketserver
+import signal
+import sys
 from http.server import BaseHTTPRequestHandler
-from swiftweet_packer import pack_tweets
+from swiftweet_packer import pack_tweets, packing, stop_packing
 
 #consumer_key: 'CxNW4dbGgBhpPvt0YRn6tOgPg',
 #consumer_secret: 'xnv05OUBTvpwZyw2n8ujWxLiYpRQiMY766paD7ojqXloaqlylt',
@@ -22,5 +24,21 @@ class TweetsFeeder(BaseHTTPRequestHandler):
             print("sending a pack of tweets")
             self.wfile.write(pack_tweets().encode())
 
-httpd = socketserver.TCPServer(("", 8080), TweetsFeeder)
-httpd.serve_forever()
+def stop_server(sig, frame):
+    # stop pulling new tweets
+    stop_packing()
+    signal.signal(signal.SIGINT, orig_sigint_handler)
+    # shutdown the server
+    print("server stopped")
+    sys.exit(0)
+
+# allow new tweets to be received
+packing()
+
+# start the server
+with socketserver.TCPServer(("", 8080), TweetsFeeder) as httpd:
+    print("Type CTRL-C to stop server")
+    orig_sigint_handler = signal.signal(signal.SIGINT, stop_server)
+    print("Server has been started")
+    print("Server is listening to http://localhost:8080/feed/start")
+    httpd.serve_forever()

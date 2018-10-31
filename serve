@@ -50,5 +50,4 @@ fi
 echo "Fridge has been powered on"
 
 echo 'Start the server'
-echo 'listening to http://localhost:8080/feed/start'
 python3 swiftweet_feeder.py
