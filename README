@@ -6,9 +6,10 @@ Prerequiesites:
 	+ python3
 	+ pip3
 
-Run:
+Run
 		./serve (this script will check for dependencies and start the local server)
-		Server will respond to "http://localhost:8080/feed/start"
+		Wait for the line "Server is listening to <http://localhost:8080/feed/start>
+		You can now send GET requests
 
 Stop:
-	Type two CTRL-C (the first will stop pulling tweets, the second will stop the server)
+	Type CTRL-C to stop the server

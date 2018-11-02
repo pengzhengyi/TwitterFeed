@@ -50,4 +50,6 @@ fi
 echo "Fridge has been powered on"
 
 echo 'Start the server'
-python3 swiftweet_feeder.py
+
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+(cd ${dir}; python3 swiftweet_feeder.py)
