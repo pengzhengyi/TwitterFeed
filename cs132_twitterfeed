@@ -51,13 +51,6 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
 
-# Credentials
-consumer_key = 'CxNW4dbGgBhpPvt0YRn6tOgPg'
-consumer_secret = 'xnv05OUBTvpwZyw2n8ujWxLiYpRQiMY766paD7ojqXloaqlylt'
-access_token_key = '4846560701-JDwgLQHKAdZiASRnpwdAHQSx9qzDvSX25JLDcQU'
-access_token_secret = 'Y6gG4tpZiReGydRHigSWFZTszCW31iKpRxuKTj8whKpAP'
-
-
 tweets = deque(maxlen=10000)
 tweets_ids = set()
 
