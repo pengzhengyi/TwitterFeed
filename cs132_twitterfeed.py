@@ -1,7 +1,27 @@
+import json
+import math
+import os
+import platform
+import random
+import signal
+import socketserver
+import subprocess
+import sys
+import threading
+import urllib.parse
+from collections import deque
+from http.server import BaseHTTPRequestHandler
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 # took from PromptUtils for portability
-GREEN='\033[92m'
-RED='\033[91m'
-END='\033[0m'
+GREEN = '\033[92m'
+RED = '\033[91m'
+END = '\033[0m'
+
+
 def print_green(msg):
     """
     Print a pretty green message to stdout
@@ -23,29 +43,13 @@ def print_red(msg):
     Returns:
         None
     """
-    print_normal("%s%s%s" % (RED, msg, END))
+    print("%s%s%s" % (RED, msg, END))
 
 
-import json
-import math
-import os
-import platform
-import random
-import signal
-import socketserver
-import subprocess
-import sys
-import threading
-import time
-import urllib.parse
-from collections import deque
-from http.server import BaseHTTPRequestHandler
-
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-
+# Install dependencies
 DEV_NULL = open(os.devnull, 'w')
+
+
 def install_if_not_exists(package_name):
     if subprocess.call(["pip3", "show", package_name], stdout=DEV_NULL):
         print_green("[OK] installing %s" % package_name)
@@ -53,14 +57,14 @@ def install_if_not_exists(package_name):
     else:
         print_green("[OK] %s has been installed" % package_name)
 
+
 install_if_not_exists("setuptools")
 install_if_not_exists("wheel")
 install_if_not_exists("bs4")
 install_if_not_exists("selenium")
 
 
-
-
+# Fetch tweets
 tweets = deque(maxlen=10000)
 tweets_ids = set()
 
@@ -97,6 +101,7 @@ def determine_os():
 
 chromedriver_path = "%s/chromedriver_%s" % (os.getcwd(), determine_os())
 
+
 def make_soup(quiet=True):
     options = Options()
     options.headless = quiet
@@ -108,11 +113,14 @@ def make_soup(quiet=True):
 
     return soup
 
+
 def cook_soup(soup):
     return [parse_tweet(tweet_html) for tweet_html in soup.find_all('div', class_='tweet')]
 
+
 def user_url(user_screen_name):
     return twitter_url + user_screen_name
+
 
 def parse_tweet(tweet_html):
     """
@@ -157,6 +165,7 @@ def parse_tweet(tweet_html):
 
     return tweet
 
+
 def pull_tweets():
     count = 0
 
@@ -170,7 +179,7 @@ def pull_tweets():
     print_green("[OK] %s new tweets has been pulled" % count)
 
 
-def pack_tweets(num_tweets=26): # enter the number of tweets you want
+def pack_tweets(num_tweets=26):  # enter the number of tweets you want
     desired_repeats = math.ceil(num_tweets / 10)
     picked_tweets = random.sample(tweets, min(num_tweets - desired_repeats, len(tweets)))
     picked_tweets.extend(random.sample(picked_tweets, desired_repeats))
@@ -180,6 +189,8 @@ def pack_tweets(num_tweets=26): # enter the number of tweets you want
 
 
 fridge_dft = os.path.join(os.getcwd(), 'twitterfeed.json')
+
+
 def packing(fridge=fridge_dft):
     defrost(fridge)
     autoload()
@@ -209,6 +220,8 @@ def defrost(fridge=fridge_dft):
 
 
 t = None
+
+
 def autoload():
     global t
     pull_tweets()
@@ -240,6 +253,7 @@ def stop_server(sig, frame):
     # shutdown the server
     print_green("[OK] server stopped")
     sys.exit(0)
+
 
 # allow new tweets to be received
 packing()
