@@ -26,10 +26,25 @@ def print_red(msg):
     print_normal("%s%s%s" % (RED, msg, END))
 
 
-import json, math, os, platform, random, signal, socketserver, subprocess, sys, threading, time
-import urllib.parse 
+import json
+import math
+import os
+import platform
+import random
+import signal
+import socketserver
+import subprocess
+import sys
+import threading
+import time
+import urllib.parse
 from collections import deque
 from http.server import BaseHTTPRequestHandler
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
 DEV_NULL = open(os.devnull, 'w')
 def install_if_not_exists(package_name):
     if subprocess.call(["pip3", "show", package_name], stdout=DEV_NULL):
@@ -44,9 +59,6 @@ install_if_not_exists("bs4")
 install_if_not_exists("selenium")
 
 
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup
 
 
 tweets = deque(maxlen=10000)
@@ -58,10 +70,12 @@ request_url = 'https://twitter.com/search?q=%s'
 
 
 argc = len(sys.argv)
+
 if argc == 1:
     print_green("[OK] Topic default to %s" % topic)
 elif argc == 2:
     topic = sys.argv[1]
+
     if topic.strip() == "-h":
         print_red("Usage: cs132_twitterfeed <topic>")
         sys.exit(0)
@@ -73,6 +87,7 @@ print_green("[OK] Pulling tweets about %s" % topic)
 
 def determine_os():
     os = platform.system().lower()
+
     if os == 'linux':
         return 'linux'
     elif os == 'darwin':
@@ -90,6 +105,7 @@ def make_soup(quiet=True):
     driver.get(request_url % urllib.parse.quote_plus(topic))
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     driver.quit()
+
     return soup
 
 def cook_soup(soup):
@@ -105,7 +121,7 @@ def parse_tweet(tweet_html):
         created_at: a.tweet_timestamp title; span._timestamp data-time
         id: div.tweet data-item-id
         id_str: str(id)
-        text: p.tweet-text 
+        text: p.tweet-text
         user: a.account-group
         entities
     """
@@ -118,7 +134,7 @@ def parse_tweet(tweet_html):
     text_section = tweet_html.select('p.tweet-text')[0]
     text = text_section.text
     text_with_html_tags = ''.join(str(tag) for tag in text_section.contents)
-    
+
     user_id_str = tweet_html['data-user-id']
     user_id = int(user_id_str)
     user_name = tweet_html['data-name']
@@ -138,12 +154,15 @@ def parse_tweet(tweet_html):
     user['screen_name'] = user_screen_name
     user['profile_image_url_https'] = user_profile_image_url_https
     user['url'] = user_url(user_screen_name)
+
     return tweet
 
 def pull_tweets():
     count = 0
+
     for tweet in cook_soup(make_soup()):
         tid = tweet['id']
+
         if tid not in tweets_ids:
             tweets_ids.add(tid)
             tweets.append(tweet)
@@ -156,6 +175,7 @@ def pack_tweets(num_tweets=26): # enter the number of tweets you want
     picked_tweets = random.sample(tweets, min(num_tweets - desired_repeats, len(tweets)))
     picked_tweets.extend(random.sample(picked_tweets, desired_repeats))
     picked_tweets.sort(key=lambda tweet: tweet["created_at"])
+
     return json.dumps(picked_tweets)
 
 
@@ -180,6 +200,7 @@ def refridge(fridge=fridge_dft):
 def defrost(fridge=fridge_dft):
     if os.path.isfile(fridge):
         print_green("[OK] defrost soup")
+
         if os.stat(fridge).st_size:
             with open(fridge, 'r') as fgd:
                 tweets.extendleft(json.load(fgd))
@@ -239,4 +260,3 @@ orig_sigint_handler = signal.signal(signal.SIGINT, stop_server)
 print_green("[OK] Server has been started")
 print_green("[OK] Server is listening to http://localhost:%s/feed/start" % portnum)
 httpd.serve_forever()
-
