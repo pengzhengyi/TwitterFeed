@@ -1,5 +1,3 @@
-#! /usr/bin/python3
-
 # took from PromptUtils for portability
 GREEN='\033[92m'
 RED='\033[91m'
